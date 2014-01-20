@@ -22,5 +22,4 @@ class RubyLintLinter(Tool):
                         str(offence['message']))
         except:
             pass
-        print retval
         return retval
