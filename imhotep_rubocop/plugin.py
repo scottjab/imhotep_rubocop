@@ -9,7 +9,15 @@ class RubyLintLinter(Tool):
     def invoke(self, dirname, filenames=set()):
         retval = defaultdict(lambda: defaultdict(list))
 
-        cmd = "find %s -name '*.rb' | xargs rubocop -f j" % dirname
+        if len(filenames) == 0:
+            cmd = "find %s -name '*.rb' | xargs rubocop -f j" % dirname
+        else:
+            ruby_files = []
+            for filename in filenames:
+                if '.rb' in filename:
+                    ruby_files.append("%s/%s" % (dirname, filename))
+
+            cmd = "rubocop -f j %s" % (" ".join(ruby_files))
         try:
             output = json.loads(self.executor(cmd))
             for linted_file in output['files']:
