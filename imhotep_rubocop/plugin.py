@@ -30,6 +30,7 @@ class RubyLintLinter(Tool):
                     line_number = str(offence['location']['line'])
                     retval[str(file_name)][line_number].append(
                         str(offence['message']))
+                    retval[str(file_name)][line_number] = list(set(retval[str(file_name)][line_number]))
         except:
             pass
         return retval
