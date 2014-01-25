@@ -6,18 +6,21 @@ import os
 
 class RubyLintLinter(Tool):
 
-    def invoke(self, dirname, filenames=set()):
+    def invoke(self, dirname, filenames=set(), linter_configs=set()):
         retval = defaultdict(lambda: defaultdict(list))
-
+        config = ''
+        for config_file in linter_configs:
+            if 'rubocop' in config_file:
+                config = "-c %s " % config_file
         if len(filenames) == 0:
-            cmd = "find %s -name '*.rb' | xargs rubocop -f j" % dirname
+            cmd = "find %s -name '*.rb' | xargs rubocop %s -f j" % (dirname, config)
         else:
             ruby_files = []
             for filename in filenames:
                 if '.rb' in filename:
                     ruby_files.append("%s/%s" % (dirname, filename))
 
-            cmd = "rubocop -f j %s" % (" ".join(ruby_files))
+            cmd = "rubocop %s -f j %s" % (config, " ".join(ruby_files))
         try:
             output = json.loads(self.executor(cmd))
             for linted_file in output['files']:
