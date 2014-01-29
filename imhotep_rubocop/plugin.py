@@ -5,6 +5,8 @@ import os
 
 
 class RubyLintLinter(Tool):
+    def get_configs(self):
+        return {'.rubocop.yml', 'rubocop.yml'}
 
     def invoke(self, dirname, filenames=set(), linter_configs=set()):
         retval = defaultdict(lambda: defaultdict(list))
